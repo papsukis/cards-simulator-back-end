@@ -36,7 +36,7 @@ public class CardServiceImpl implements CardService {
     @Autowired
     ImageService imageService;
 
-    String basePath = "locahost:10002/";
+    String basePath = "locahost:10000/";
 
     private List<Card> cards;
     private RestTemplate restTemplate = new RestTemplate();
@@ -91,9 +91,6 @@ public class CardServiceImpl implements CardService {
             ResponseEntity<String> json = restTemplate.exchange("https://db.ygoprodeck.com/api/v5/cardinfo.php", HttpMethod.GET, entity, String.class);
             Card[] response=null;
 
-            List<CardSetsItem> setsItems = new ArrayList<>();
-            List<CardImagesItem> imagesItems = new ArrayList<>();
-            List<CardPrices> cardPrices = new ArrayList<>();
 
             try {
                 response = mapper.readValue( json.getBody(), Card[].class);
@@ -101,17 +98,14 @@ public class CardServiceImpl implements CardService {
                 System.out.println(e);
             }
 
-            for (int i = 0; i < 500 ; i++) {
+            for (int i = 0; i < response.length ; i++) {
 
                 System.out.println(i + "/" + response.length);
-                    if (response[i].getCardSets() != null)
-                            {
-                                setsItems.addAll(response[i].getCardSets());
-                            }
-                            //cardSetsRepository.saveAll(response[i].getCardSets());
+
                     if (response[i].getCardImages() != null)
                     {
                         for(CardImagesItem c : response[i].getCardImages()){
+
                         c.setImageUrl(
                                 imageService.storeImg(
                                         c.getImageUrl(),
@@ -130,26 +124,10 @@ public class CardServiceImpl implements CardService {
                                 "localhost:10000/"+c.getName()
                                 );
                         }
-                            imagesItems.addAll(response[i].getCardImages());
-//                        cardImagesRepository.saveAll(response[i].getCardImages());
+                        response[i].setCardImages(response[i].getCardImages());
                     }
-
-                    if (response[i].getCardPrices() != null )
-                            cardPrices.add(response[i].getCardPrices());
-//                            cardPricesRepository.save(response[i].getCardPrices());
-
-
-
                 }
-                //cardsRepository.saveAndFlush(response[i]);
-
-        System.out.println(imagesItems.size());
-
-//            cardSetsRepository.saveAll(setsItems);
-//            cardImagesRepository.saveAll(imagesItems);
-            cardPricesRepository.saveAll(cardPrices);
             cardsRepository.saveAll(Arrays.asList(response));
-
             return true;
     }
 

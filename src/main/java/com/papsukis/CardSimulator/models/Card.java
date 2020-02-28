@@ -37,7 +37,7 @@ public class Card{
 	private List<CardSetsItem> cardSets;
 
 	@JsonProperty("card_prices")
-	@OneToOne
+	@OneToOne(cascade=CascadeType.ALL)
 	@JsonIgnore
 	private CardPrices cardPrices;
 
