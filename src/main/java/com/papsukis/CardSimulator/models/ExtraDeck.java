@@ -18,7 +18,7 @@ public class ExtraDeck {
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(name = "extra_deck_card", joinColumns = @JoinColumn(name = "card_id"), inverseJoinColumns = @JoinColumn(name = "extradeck_id"))
     private List<Card> cards;
-    @OneToOne(mappedBy = "extraDeck")
+    @OneToOne(mappedBy = "extraDeck",cascade = CascadeType.ALL)
     @JoinColumn(name="decklist_id")
     Decklist decklist;
 

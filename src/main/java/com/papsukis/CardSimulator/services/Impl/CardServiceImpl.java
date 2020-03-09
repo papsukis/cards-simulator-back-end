@@ -101,7 +101,7 @@ public class CardServiceImpl implements CardService {
                 System.out.println(e);
             }
 
-            for (int i = 0; i < 500 ; i++) {
+            for (int i = 0; i < response.length ; i++) {
 
                 System.out.println(i + "/" + response.length);
                     if (response[i].getCardSets() != null)
@@ -130,7 +130,6 @@ public class CardServiceImpl implements CardService {
                                 "localhost:10000/"+c.getName()
                                 );
                         }
-                            imagesItems.addAll(response[i].getCardImages());
 //                        cardImagesRepository.saveAll(response[i].getCardImages());
                     }
 
@@ -147,7 +146,7 @@ public class CardServiceImpl implements CardService {
 
 //            cardSetsRepository.saveAll(setsItems);
 //            cardImagesRepository.saveAll(imagesItems);
-            cardPricesRepository.saveAll(cardPrices);
+            //cardPricesRepository.saveAll(cardPrices);
             cardsRepository.saveAll(Arrays.asList(response));
 
             return true;

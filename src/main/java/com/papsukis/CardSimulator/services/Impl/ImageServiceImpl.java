@@ -9,7 +9,8 @@ import java.net.URL;
 @Service
 public class ImageServiceImpl implements ImageService {
 
-    String baseUrl = "C:\\Card Simulator\\Images\\";
+    String baseUrl = "C:/CardSimulator/images/";
+    String localHost = "http://localhost:10000/images/";
 
     @Override
     public String storeImg(String IMGurl, String name) throws IOException {
@@ -32,6 +33,6 @@ public class ImageServiceImpl implements ImageService {
             fos.close();
         }
 
-        return baseUrl+name+".jpg";
+        return localHost+name+".jpg";
     }
 }

@@ -30,14 +30,14 @@ public class Card{
 
 	@JsonProperty("card_sets")
 	@ManyToMany(fetch= FetchType.EAGER,
-			cascade={ CascadeType.PERSIST})
+			cascade={ CascadeType.ALL})
 	@JoinTable(name = "card_sets_cards",
 			joinColumns = @JoinColumn(name = "card_id"),
 			inverseJoinColumns = @JoinColumn(name = "card_sets_id"))
 	private List<CardSetsItem> cardSets;
 
 	@JsonProperty("card_prices")
-	@OneToOne
+	@OneToOne(cascade={ CascadeType.ALL})
 	@JsonIgnore
 	private CardPrices cardPrices;
 
@@ -69,6 +69,11 @@ public class Card{
 
 	@JsonProperty("attribute")
 	private String atribute;
+
+	@JsonProperty("banlist_info")
+	@OneToOne(cascade={ CascadeType.ALL})
+	@JsonIgnore
+	private BanlistInfo banlistInfo;
 
 //	@ManyToMany(mappedBy = "cards")
 //	@JsonIgnore
