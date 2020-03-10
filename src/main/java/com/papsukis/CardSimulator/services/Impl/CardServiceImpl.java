@@ -3,10 +3,7 @@ package com.papsukis.CardSimulator.services.Impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.papsukis.CardSimulator.DTO.CardDTO;
-import com.papsukis.CardSimulator.models.Card;
-import com.papsukis.CardSimulator.models.CardImagesItem;
-import com.papsukis.CardSimulator.models.CardPrices;
-import com.papsukis.CardSimulator.models.CardSetsItem;
+import com.papsukis.CardSimulator.models.*;
 import com.papsukis.CardSimulator.repository.*;
 import com.papsukis.CardSimulator.services.CardService;
 import com.papsukis.CardSimulator.services.ImageService;
@@ -153,9 +150,9 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public List<Card> search(CardDTO card) {
+    public SearchQueryResults search(CardDTO card, int page, int size) {
 
-        List<Card> c = cardsRepository.search(card);
+        SearchQueryResults c = cardsRepository.search(card,page*size,size);
         return  c;
 
     }

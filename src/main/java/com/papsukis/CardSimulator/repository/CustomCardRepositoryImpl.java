@@ -2,7 +2,10 @@ package com.papsukis.CardSimulator.repository;
 
 import com.papsukis.CardSimulator.DTO.CardDTO;
 import com.papsukis.CardSimulator.models.Card;
+import com.papsukis.CardSimulator.models.SearchQueryResults;
 import org.hibernate.Session;
+import org.hibernate.cache.spi.QueryResultsCache;
+import org.springframework.data.domain.Page;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,7 +23,7 @@ public class CustomCardRepositoryImpl implements CustomCardRepository {
     private EntityManager em;
 
     @Override
-    public List<Card> search(CardDTO card) {
+    public SearchQueryResults search(CardDTO card, int firstResult, int maxResults) {
 
         Session session = em.unwrap(Session.class);
 
@@ -29,6 +32,7 @@ public class CustomCardRepositoryImpl implements CustomCardRepository {
         CriteriaQuery<Card> cardCriteriaQuery = criteriaBuilder.createQuery(Card.class);
 
         Root<Card> from = cardCriteriaQuery.from(Card.class);
+
         List<Predicate> predicates = new ArrayList<Predicate>();
 
         //Adding predicates in case of parameter not being null
@@ -82,12 +86,26 @@ public class CustomCardRepositoryImpl implements CustomCardRepository {
         cardCriteriaQuery
                 .where(predicates.toArray(new Predicate[]{}));
 
-      //  cardCriteriaQuery
 
         TypedQuery<Card> query = session.createQuery(cardCriteriaQuery);
-        List<Card> results = query.getResultList();
 
-        return results;
+        CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Card> entity_ = countQuery.from(cardCriteriaQuery.getResultType());
+        countQuery.select(criteriaBuilder.count(entity_));
+        Predicate restriction = cardCriteriaQuery.getRestriction();
+        if (restriction != null) {
+            countQuery.where(predicates.toArray(new Predicate[]{})); // Copy restrictions
+        }
+        int totalCount=(int) (long) em.createQuery(countQuery).getSingleResult();
+
+
+        query.setFirstResult(firstResult);
+        query.setMaxResults(maxResults);
+        SearchQueryResults result=new SearchQueryResults();
+        result.setResultSize(totalCount);
+        result.setQueryResults(query.getResultList());
+
+        return result;
 
     }
 
